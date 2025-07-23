@@ -1,0 +1,16 @@
+# To be used in smpl_conversion/inference/combined_prediction.py
+dataset: <path-to-dataset-to-be-predicted>
+body_model_location: <path-to-folder-that-contains-body-models>
+transfer_file_location: <path-to-folder-that-contains-body-models>/transfer
+checkpoint: <checkpoint-to-use>
+output_file: <npy-file-where-converted-parameters-should-be-written-to>
+batch_size: 512
+subsampling_factor: 1
+tqdm_usage: shell
+translation_key: smplx_trans_male # key of translation parameters in input .npz file
+shape_key: smplx_betas_male
+pose_key: smplx_poses_male
+calculate_errors: true
+errors_to_calculate: ["mpvpe", "edge"]
+device: cuda
+verbosity: 1

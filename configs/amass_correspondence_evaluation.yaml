@@ -1,0 +1,26 @@
+# To be used in smpl_conversion/evaluation/amass_correspondence_evaluation.py
+general:
+  gender: ['male', 'female']
+  device: 'auto'
+  device_dataset: 'cuda'
+  body_model_location:  path/to/body/models
+  transfer_file_location: path/to/body/models/transfer
+  tqdm: 'shell' # @see utils.enum_configurations.py TqdmUsage
+
+conversion:
+  mode: ['smplx2smplh', 'smplh2smplx']
+  parameter: ['trans', 'betas', 'poses']
+
+data:
+  dataset_path:
+    - paths to datasets that should be evaluated on
+  parameters_to_extract: ['trans', 'betas', 'poses']
+  parameters_to_fix: []
+  n_shape_components: 16
+  subsampling_factor: 1 # use all data
+
+evaluation:
+  batch_size: 512
+  metrics: ['vertex', 'edge']
+  metrics_reduction_mode: ['mean']
+  output_location: output/data/location

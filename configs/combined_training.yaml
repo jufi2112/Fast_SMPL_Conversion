@@ -1,0 +1,114 @@
+# To be used for smpl_conversion/training/combined_training.py
+general:
+  random_seed: 1
+  gender: 'male'
+  device: 'cuda' # device for processing
+  device_dataset: 'cuda' # device where whole dataset is loaded to
+  body_model_location: <path-to-folder-containing-smpl-models>
+  transfer_file_location: <path-to-folder-containing-smpl-models>/transfer
+  tqdm: 'shell' # @see utils/enum_configurations.py class TqdmUsage
+
+conversion:
+  mode: 'smplx2smplh'
+  parameter: ['trans', 'betas', 'poses']
+  model_max_dims: 2048 # any multiple of 2 that is greater than the summed numbers of translation, shape, and pose parameters
+  network_norm_layer: 'none' # 'layernorm' or 'batchnorm' or 'none' @see utils/enum_configurations.py NetworkNormalizationMode
+  network_activation: 'relu' # 'relu' or 'leaky_relu' @see utils/enum_configurations.py NetworkActivationFunction
+  model_type: 'combined_skip' # @see utils/enum_configurations.py ConversionNetworkArchitecture
+  supr_is_constrained: false
+  input_rotation_representation: 'rot_vec' # @see utils/enum_configurations.py class PoseRepresentation
+  output_rotation_representation: 'rot_vec' # @see utils/enum_configurations.py class PoseRepresentation
+
+transformer_settings: # only used if model_type is 'separated_attention' or 'separated_attention_skip'
+  embed_dim: 64
+  pos_enc_mode: 'learnable'
+  ffwd_hidden_size: 256
+  n_blocks: 1
+
+data:
+  train_dataset_path: <path-to-train-data-npz-file
+  valid_dataset_path: <optional-path-to-validation-data-npz-file>
+  parameters_to_extract: ['trans', 'betas', 'poses']
+  parameters_to_fix: []
+  allow_unsupervised: true
+  n_shape_components: 16
+  validation_split: 0.2 # Only used when valid_dataset_path is null
+  subsampling_factor_train: 1
+  subsampling_factor_valid: 1
+  shuffle_dataset: true
+  normalize_data: false
+  normalization_method: 'minmax'
+  normalization_methods:
+    minmax:
+      kwargs:
+        feature_range: [0, 1]
+        clip_transform: false
+        verbosity: 0
+  train_on_random_shape_data: true
+  train_on_random_trans_data: false
+  train_on_random_pose_data: false # includes global orientation
+  train_on_random_global_orient_data: false
+  random_shape_data:
+    random_mode: 'uniform' # 'uniform' or 'normal'
+    uniform:
+      from: -4
+      to: 4
+    normal:
+      mean: 0
+      std: 2
+  random_trans_data:
+    random_mode: 'uniform' # 'uniform' or 'normal'
+    uniform:
+      x_min: -5
+      x_max: 5
+      y_min: -5
+      y_max: 5
+      z_min: -5
+      z_max: 5
+    normal:
+      x_mean: 0
+      y_mean: 0
+      z_mean: 0
+      x_std: 1
+      y_std: 1
+      z_std: 1
+
+training:
+  batch_size: 512
+  epochs: 150
+  lr: 5.0e-4
+  lr_scheduler: 'reduce_lr_on_plateau' # to disable: null
+  optimizer: 'adam' # 'sgd' or 'adam'
+  enable_early_stopping: false
+  lr_early_stopping_threshold: 1.0e-7
+  loss_fn: 'vertex' # 'vertex', 'edge', 'direct', 'mse', 'vertex_edge'
+  loss_fn_weights:  # Only used when loss=='vertex_edge'
+    vertex: 1
+    edge: 25
+  loss_reduction_mode: 'mean' # 'sum', 'mean'
+  metrics: ['vertex', 'edge'] # 'vertex', 'edge'
+  metrics_reduction_mode: ['mean'] # 'sum', 'mean'
+  calculate_metrics_for_ground_truth: true
+  epoch_report_interval: 5
+  log_dir: '/data/output/training_logs/combined/smplx2smplh'  # Gets superseded by experiment directory manager
+  save_checkpoint: 'best' # 'best', 'all', 'off'
+  checkpoint_dir: '/data/output/checkpoints/combined/smplx2smplh' # Gets superseded by experiment directory manager
+  evaluate_train_data_after_last_batch: false
+  check_for_nan: false
+  lr_scheduler_args:
+    reduce_lr_on_plateau:
+      patience: 5
+      factor: 0.8
+    cosine_annealing_lr:
+      T_max: 'n_epochs' # or custom int
+      eta_min: 0 #2.0e-5
+    linear_lr:
+      start_factor: 1
+      end_factor: 0
+      total_iters: 'n_epochs'
+    constant_lr:
+      factor: 1
+      total_iters: 'n_epochs'
+  optim_args:
+    adam: null
+    sgd: null

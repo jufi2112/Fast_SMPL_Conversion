@@ -1,0 +1,38 @@
+# To be used in smpl_conversion/evaluation/direct_parameter_transfer_evaluation.py
+general:
+  gender: ['male', 'female']
+  device: 'cuda'
+  device_dataset: 'cuda'
+  body_model_location:  path/to/body/models
+  transfer_file_location: path/to/body/models/transfer
+  tqdm: 'shell' # @see utils.enum_configurations.py TqdmUsage
+
+conversion:
+  mode:
+    - supr2smpl
+    - supr2smplh
+    - supr2smplx
+    - supr2star
+    - star2supr
+    - smpl2supr
+    - ...
+  parameter: ['trans', 'betas', 'poses']
+  supr_is_constrained: false
+
+data:
+  dataset_path:
+    supr: supr/dataset/to/evaluate/on
+    smplx: "..."
+    smplh: "..."
+    smpl: "..."
+    star: "..."
+  parameters_to_extract: ['trans', 'betas', 'poses']
+  parameters_to_fix: []
+  n_shape_components: 16
+  subsampling_factor: 1 # use all data
+
+evaluation:
+  batch_size: 512
+  metrics: ['vertex', 'edge']
+  metrics_reduction_mode: ['mean']
+  output_location: path/to/output/location

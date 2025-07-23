@@ -1,0 +1,4 @@
+torch_trust_ncg @ git+https://github.com/vchoutas/torch-trust-ncg@main
+smplx @ git+https://github.com/jufi2112/smplx@master
+supr @ git+https://github.com/jufi2112/SUPR@master
+star @ git+https://github.com/jufi2112/STAR@master

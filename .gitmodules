@@ -1,0 +1,3 @@
+[submodule "smpl_conversion/utils/Quaternions"]
+	path = smpl_conversion/utils/Quaternions
+	url = https://github.com/jufi2112/Quaternions

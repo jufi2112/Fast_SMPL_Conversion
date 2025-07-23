@@ -1,0 +1,17 @@
+# To be used in smpl_conversion/evaluation/combined_evaluation.py
+checkpoint: "path/to/checkpoint"
+dataset: "path/to/dataset"
+body_model_location: "path/to/body/models"
+transfer_file_location: "path/to/body/models/transfer"
+verbosity: 1
+dataset_device: "cuda"
+inference_device: "auto"
+evaluation:
+  batch_size: 512
+  metric_names: ["vertex", "edge", "mse"]
+  show_vertex_error_distribution: true
+  set_error_of_invalid_vertices_to_zero: true
+  tqdm_mode: 'shell'
+  result_save_location: "path/to/output/dir"
+  previous_save_location: null
+  overwrite_existing_results: true
