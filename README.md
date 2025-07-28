@@ -1,4 +1,6 @@
 # Fast and Accurate Parameter Conversion for Parametric Human Body Models
+[[Project Page](https://jufi2112.github.io/Fast_SMPL_Conversion/)]
+
 We train fully-connected neural networks for the conversion between SMPL, SMPL+H, SMPL-X, SUPR, and STAR model parameters for male and female gender.
 
 The following image shows our training and inference procedure:
@@ -105,7 +107,7 @@ In the `visualization` dir, there is a `train_visualizer.py` script which can be
 By default, the created checkpoints contain a lot of information which are necessary if you want to resume training from the checkpoint. If you, however, only plan to use the checkpoint to make predictions, you can reduce the file size by removing unnecessary information. You can do this by passing the checkpoint file to the `utils/checkpoint.py` script. This will also remove personalized information (e.g. paths on your system) from the checkpoint file. Note that you will not be able to continue training from such a sanitized checkpoint!
 
 ## Predicting
-You will need a trained model (usually a `.ckpt` file). You can use the `CombinedPredictor` class from `inference/combined_prediction.py` to make predictions in your pipeline. You can either convert a single batch of data using the `.predict()` or a whole dataset using the `.predict_dataset()` methods. Make sure that the parameters you provide match the number of shape components and the pose rotation representation that is required by the checkpoint (the checkpoints we provide require 16 shape components and use rotation vectors as input and output rotation representation).
+You will need a trained model (usually a `.ckpt` file, you can obtain them from our [project page](https://jufi2112.github.io/Fast_SMPL_Conversion/)). You can use the `CombinedPredictor` class from `inference/combined_prediction.py` to make predictions in your pipeline. You can either convert a single batch of data using the `.predict()` or a whole dataset using the `.predict_dataset()` methods. Make sure that the parameters you provide match the number of shape components and the pose rotation representation that is required by the checkpoint (the checkpoints we provide require 16 shape components and use rotation vectors as input and output rotation representation).
 
 ## Results
 The below figure shows quantitative results of our conversion method:
