@@ -49,43 +49,46 @@
     <!-- <link rel="canonical" href="https://www.yourwebsite.com" /> -->
 
     <!-- Favicon for different platforms -->
+     <!--
     <link
       rel="icon"
-      href="Assets/Favicon/icons8-research-color-16.png"
+      href="assets/Favicon/icons8-research-color-16.png"
       sizes="16x16"
       type="image/png"
     />
     <link
       rel="icon"
-      href="Assets/Favicon/icons8-research-color-32.png"
+      href="assets/Favicon/icons8-research-color-32.png"
       sizes="32x32"
       type="image/png"
     />
     <link
       rel="icon"
-      href="Assets/Favicon/icons8-research-color-70.png"
+      href="assets/Favicon/icons8-research-color-70.png"
       sizes="70x70"
       type="image/png"
     />
     <link
       rel="icon"
-      href="Assets/Favicon/icons8-research-color-72.png"
+      href="assets/Favicon/icons8-research-color-72.png"
       sizes="72x72"
       type="image/png"
     />
     <link
       rel="icon"
-      href="Assets/Favicon/icons8-research-color-96.png"
+      href="assets/Favicon/icons8-research-color-96.png"
       sizes="96x96"
       type="image/png"
     />
+  -->
 
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
     <nav class="nav">
       <a href="#abstract">Abstract</a>
-      <a href="#introduction">Introduction</a>
+      <!--<a href="#introduction">Introduction</a>-->
       <a href="#methodology">Methodology</a>
       <a href="#results">Results</a>
       <a href="#conclusion">Conclusion</a>
@@ -107,7 +110,7 @@
       <div class="authors">
         <p>
           <a href="https://tu-dresden.de/ing/informatik/smt/cgv/die-professur/mitarbeiter/julien-fischer">Julien Fischer</a><sup>1</sup>,
-          <a href="https://tu-dresden.de/ing/informatik/smt/cgv/die-professur/inhaber-in">Stefan Gumhold</a><sup>1</sup>,
+          <a href="https://tu-dresden.de/ing/informatik/smt/cgv/die-professur/inhaber-in">Stefan Gumhold</a><sup>1</sup>
         </p>
         <p>
           <sup>1</sup>TUD Dresden University of Technology, Germany
@@ -132,10 +135,19 @@
 
     <div class="buttons">
       <a href="#" target="_blank">Paper (coming soon)</a>
-      <a href="#" target="_blank">Videos (coming soon)</a>
-      <a href="#" target="_blank">Code (coming soon)</a>
-      <!--<a href="#" target="_blank">Dataset</a>-->
-      <a href="#" target="_blank">Model (coming soon)</a>
+      <a href="#" target="_blank">Supplementary (coming soon)</a>
+      <a href="https://github.com/jufi2112/Fast_SMPL_Conversion" target="_blank">Code</a>
+      <noscript>
+        <style>
+          #checkpoints-fallback {
+            display: inline-block;
+          }
+        </style>
+        <a id="checkpoints-fallback" class="button-fallback" href="https://datashare.tu-dresden.de/s/Ck6AKFjka6StgCw" target="_blank">
+          Checkpoints (MIT License applies)
+        </a>
+      </noscript>
+      <a href="#" id="checkpoints-link" target="_blank" style="display: none;">Checkpoints</a>
       <a href="#bibtex">BibTex</a>
     </div>
 
@@ -149,9 +161,9 @@
     -->
 
     <!-- Single YouTube Video -->
+    <!--
     <div class="video-section">
       <h3>Demo Video</h3>
-      <!--
       <div class="video-container">
         <iframe
           width="560"
@@ -164,11 +176,11 @@
           allowfullscreen
         ></iframe>
       </div>
-      -->
       <p>
         TODO
       </p>
     </div>
+    -->
 
     <div class="abstract" id="abstract">
       <h2>Abstract</h2>
@@ -183,12 +195,12 @@
     Please do not remove below H2 heading tag. Add your HTML code after H2 HTML tag or add text inside P HTML tag. 
     Remove this step if not applicable
     -->
-
+    <!--
     <div class="content-section" id="introduction">
       <h2>Introduction</h2>
       <p>TODO: Add Introduction</p>
     </div>
-
+    -->
     <!-- Step 4 End: Add your paper introduction -->
 
     <!-- Step 5 Start: Add your paper methodology -->
@@ -200,11 +212,16 @@
 
     <div class="content-section" id="methodology">
       <h2>Methodology</h2>
-      <p>TODO: Add Methodology</p>
-      <ul>
-        <li>TODO</li>
-        <li>TODO</li>
-      </ul>
+      <h3>Method Overview</h3>
+      <img src="assets/method_overview_final.png" alt="The flow of data in our training and inference procedures is visualized via arrows. Input like parameter sequences and vertex correspondences is visualized using yellow boxes, inference output is visualized as red boxes." class="method-image">
+      <p>
+        During training (top, light rose color), we sample human body parameters of model type \(A\) from our AMASS and Motion-X training dataset and feed it as input to our fully-connected network. The network outputs the parameters converted to body model type \(B\). We evaluate input and target body models with these parameters to obtain vertices for input and estimated parameters. For supervision, we use known vertex correspondences to obtain ground truth vertices. Finally, we are using the mean-per-vertex-position-error (MPVPE) between ground truth and estimated vertices as loss function. During inference (bottom, lavender color), we use the trained network to predict converted parameters in real-time. Optionally, we can employ the same loss calculation as during training to provide inference-time feedback on the quality of the performed conversion, enabling downstream methods to react to possibly poor predictions.
+      </p>
+      <h3>Network Architecture</h3>
+      <img src="assets/architecture_style_1_white_background.png" alt="Shown on the left is a vector of input translation, shape, and pose parameters. In the middle is our conversion network with a wide to narrow representation that is typical for feature extraction networks. Green trapezoids represent fully connected layers that are followed by non-linear activation functions. The layers are stacked with decreasing size (each layer halves the size of the previous one). In-between every two such layers is a blue rectangle that shows the output size of the previous layer. Sizes are 2048, 1024, 512, 256 and optional 128 if the target model type is either SMPL or STAR. These optional layers are indicated by a gray area. A final fully connected layers builds the output of our network. Below the network architecture is a yellow box that represents our direct transfer module, which directly copies parameters from one body model type to another without doing any conversion but only adding additional or removing unsupported joints. On the right is again a vector representing converted translation, shape, and pose parameters. Connections between the different elements are shown with arrows. The input parameters are fed to the network and the direct transfer module. Network and direct transfer module output is added and builds the output parameters." class="architecture-image">
+      <p>
+        Architecture of our proposed parameter conversion network. Computation layers are shown as green trapezoids, while light blue rectangles indicate the output dimensionality of the previous computation layer. Our network predicts offsets to the input parameters. Since the joint hierarchies between input and target model types might differ, a direct transfer module (yellow box) adapts the input pose parameters to be compatible with the target joint hierarchy. Elements in the gray area are present only if the target model type is either SMPL or STAR.
+      </p>
     </div>
 
     <!-- Step 5 End: Add your paper methodology -->
@@ -229,54 +246,65 @@
 
     <div class="content-section" id="results">
       <h2>Results</h2>
-      <p>TODO: Add Results</p>
-      <ul>
-        <li>TODO</li>
-        <li>TODO</li>
-      </ul>
+      <h3>Quantitative Results</h3>
+      <img src="assets/conversion_performance_radar_chart_revised.svg" alt="The radar charts plot male and female errors on all conversions using different colors and linestyles. Errors for optimization and our method are relatively similar besides for conversions from SMPL, where optimization-based error is higher. For female gender, our method's error is usually higher than the error of the optimization-based methods by about 0.2 mm." class="radar-chart-image">
+      <p>
+        Differences in conversion errors (MPVPE as solid line, MPEE dotted, given in mm) between the existing optimization-based approaches (blue) and our proposed conversion method (red) on 10000 samples from our test dataset.
+      </p>
+      <img src="assets/pvpe_breitbild.svg" alt="Male and female bodies are represented in rest pose and their vertices are colored with a jet colormap in order to represent per-vertex errors. Typical error hot spots are around the hips, hands, armpits, and back of the head." class="quant-pvpe-opt-image">
+      <p>
+        Comparison of the conversion error of our method and the corresponding optimization-based method over 10000 samples from our test dataset. In (a) and (b), we show STAR to SMPL conversion, where our method performs the worst when compared to the optimization-based method, with differences in MPVPE of 0.4 mm for male (a) and 0.8 mm for female (b) model types. In (c) and (d), we show results for SMPL to SMPL+H conversion, where our method achieves the biggest improvements over the optimization-based method: 2.0 mm for male (c) and 3.0 mm for female (d). We show results of our method for all conversion directions in our supplementary.
+      </p>
+      <h3>Qualitative Results</h3>
+      <img src="assets/qualitative_breitbild.svg" alt="Original and converted models are overlayed on each other. While (a) and (b) (left and middle) provide a good fit, the right example (c) has large differences between original and converted extremities and head." class="qual-res-class">
+      <p>
+        Good (0.2 mm MPVPE, (a)), median (4.5 mm MPVPE, (b)), and bad (48.8 mm MPVPE, (c)) results of our conversion method, each shown from two different sides. Results show (left to right) male SMPL to SMPL+H, female SMPL to SMPL-X, and female SMPL to SUPR conversion. Shown in blue are the original meshes, shown in red are the resulting meshes after parameter conversions. Notice that for the bad result, the input mesh already contains an impossible pose for the right arm.
+      </p>
     </div>
 
     <!-- 3 Images Carousel -->
-    <h3>Image Gallery</h3>
-    <!--
+    <h3>PVPE Gallery</h3>
     <div class="carousel-container" id="imageCarousel">
       <div class="carousel-track">
         <div class="carousel-slide">
-          <img src="Assets/Photo1.jpg" alt="Slide 1" />
+          <figure>
+            <img src="assets/pvpe_smpl_amass_motionx.png" alt="Male and female bodies in rest pose with vertices colorized by jet colormap to show per-vertex error. Regions of high errors are armpits, backside of head, hip region. Upper side of the shoulder. SMPL to SMPL+H and SMPL-X have localized errors, while SMPL to STAR and SUPR have more distributed errors." />
+            <figcaption>PVPE for male and female conversions from SMPL to all other model types.</figcaption>
+          </figure>
         </div>
         <div class="carousel-slide">
-          <img src="Assets/Photo2.jpg" alt="Slide 2" />
+          <figure>
+              <img src="assets/pvpe_smplh_amass_motionx.png" alt="Male and female bodies in rest pose with vertices colorized by jet colormap to show per-vertex error. Error for SMPL+H to SMPL is located mostly in hands, while SMPL+H to supr is again distributed over whole body." />
+              <figcaption>PVPE for male and female conversions from SMPL+H to all other model types.</figcaption>
+          </figure>
         </div>
         <div class="carousel-slide">
-          <img src="Assets/Photo3.jpg" alt="Slide 3" />
+          <figure>
+            <img src="assets/pvpe_smplx_amass_motionx.png" alt="Male and female bodies in rest pose with vertices colorized by jet colormap to show per-vertex error. Regions of high errors are armpits, backside of head, hip region. Back side of the shoulder. Errors for SMPL-X to SMPL, SMPL+H, and STAR are localized, errors to SUPR are more distributed." />
+            <figcaption>PVPE for male and female conversions from SMPL-X to all other model types.</figcaption>
+          </figure>
         </div>
         <div class="carousel-slide">
-          <img src="Assets/Photo4.jpg" alt="Slide 4" />
+          <figure>
+            <img src="assets/pvpe_supr_amass_motionx.png" alt="Male and female bodies in rest pose with vertices colorized by jet colormap to show per-vertex error. Regions of high errors are armpits, backside of head, hip region. Back side of the shoulder. Errors for all bodies are similarly distributed across the whole body." />
+            <figcaption>PVPE for male and female conversions from SUPR to all other model types.</figcaption>
+          </figure>
         </div>
         <div class="carousel-slide">
-          <img src="Assets/Photo5.jpg" alt="Slide 5" />
-        </div>
-        <div class="carousel-slide">
-          <img src="Assets/Photo6.jpg" alt="Slide 6" />
-        </div>
-        <div class="carousel-slide">
-          <img src="Assets/Photo7.jpg" alt="Slide 7" />
-        </div>
-        <div class="carousel-slide">
-          <img src="Assets/Photo8.jpg" alt="Slide 8" />
+          <figure>
+            <img src="assets/pvpe_star_amass_motionx.png" alt="Male and female bodies in rest pose with vertices colorized by jet colormap to show per-vertex error. Regions of high errors are armpits, backside of head, hip region. Back side of the shoulder. Errors for all bodies are similarly distributed across the whole body." />
+            <figcaption>PVPE for male and female gender of our conversion networks for conversions from STAR to all other model types.</figcaption>
+          </figure>
         </div>
       </div>
       <button class="carousel-button prev">←</button>
       <button class="carousel-button next">→</button>
       <div class="carousel-indicators"></div>
-          -->
-    <p>TODO</p>
     </div>
 
 
     <!-- 3 Videos Carousel -->
-    <h3>Video Gallery</h3>
-    <!--
+    <!--<h3>Video Gallery</h3>
     <div class="carousel-container" id="videoCarousel">
       <div class="carousel-track">
         <div class="carousel-slide">
@@ -355,9 +383,8 @@
       <button class="carousel-button prev">←</button>
       <button class="carousel-button next">→</button>
       <div class="carousel-indicators"></div>
-      -->
     <p>TODO</p>
-    </div>
+    </div>-->
 
 
     <!-- Single YouTube Video -->
@@ -389,9 +416,9 @@
 
 
     <!-- YouTube Video List -->
+    <!--
     <div class="video-section">
       <h3>Demo Videos List</h3>
-      <!--
       <div class="video-container">
         <iframe
           width="560"
@@ -404,9 +431,9 @@
           allowfullscreen
         ></iframe>
       </div>
-      -->
       <p>TODO</p>
     </div>
+    -->
 
     <!-- Step 6 End: Add your paper results -->
 
@@ -419,7 +446,7 @@
 
     <div class="content-section" id="conclusion">
       <h2>Conclusion</h2>
-      <p>TODO: Add Conclusion</p>
+      <p>We have presented a learning-based method for the conversion of parameters between SMPL-based parametric human body models. To the best of our knowledge, this is the first work that specifically aims to learn these parameter conversions. We have compared our method to existing optimization-based approaches and have shown that we can convert parameters with similar conversion quality as existing works at a fraction of their runtime. In a demo application that simulates the streaming of digital human twins, we have shown that our method can be used to convert the SMPL-based parameter encodings of these digital twins in real-time. Our method includes functionality to provide real-time feedback on its conversion quality, enabling downstream tasks to react to poor estimates, enabling a more trustworthy overall system architecture.</p>
     </div>
 
     <!-- Step 7 End: Add your paper conclusion -->
@@ -433,15 +460,22 @@
 
     <div class="bibtex-section" id="bibtex">
       <h2>BibTeX</h2>
-      <button class="bibtex-copy-button" onclick="copyBibTeX()">
-        Copy to Clipboard
-      </button>
-      <pre>
-        <!-- Please edit only below details -->
-        <code class="language-bibtex">
-          TODO
-        </code>
-      </pre>
+      <div class="bibtex-copy-container">
+        <span id="copyMessage" class="copy-message">BibTeX copied!</span>
+        <button class="bibtex-copy-button" onclick="copyBibTeX()">Copy to Clipboard</button>
+      </div>
+      <pre><code class="language-bibtex">@article{fischer_fast_2025,
+author = {Fischer, Julien and Gumhold, Stefan},
+title = {Fast and {Accurate} {Parameter} {Conversion} for {Parametric} {Human} {Body} {Models}},
+journal = {Proc. ACM Comput. Graph. Interact. Tech.},
+volume = {8},
+number = {4},
+month = aug,
+year = {2025},
+pages = {21},
+url = {https://doi.org/10.1145/3747869},
+doi = {10.1145/3747869},
+}</code></pre>
     </div>
 
     <!-- Step 8 End: Add your paper references -->
@@ -485,5 +519,41 @@
     </button>
 
     <script src="script.js"></script>
+
+    <!-- License Model -->
+     <div id="licenseModal" class="modal">
+        <div class="modal-content">
+          <h2>License Agreement for Conversion Checkpoints</h2>
+          <div id="licenseText" class="license-text">
+            <pre>
+MIT License
+
+Copyright (c) 2025 Julien Fischer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+            </pre>
+          </div>
+          <div class="modal-buttons">
+            <button id="acceptBtn" disable>I Accept</button>
+            <button onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+     </div>
   </body>
 </html>

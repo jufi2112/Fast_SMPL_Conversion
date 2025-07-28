@@ -1,8 +1,15 @@
 function copyBibTeX() {
     var bibTexElement = document.querySelector(".bibtex-section pre code");
-    var bibTexText = bibTexElement.innerText;
+    var bibTexText = bibTexElement.innerText.trim();
     navigator.clipboard.writeText(bibTexText);
-    alert("BibTeX citation copied to clipboard!");
+
+    var message = document.getElementById("copyMessage");
+    message.style.opacity = 1;
+
+    // hide message after 5 seconds
+    setTimeout(() => {
+      message.style.opacity = 0;
+    }, 5000);
   }
   function toggleDarkMode() {
     document.body.classList.toggle("dark-mode");
@@ -30,8 +37,8 @@ function copyBibTeX() {
       this.indicators = element.querySelector(".carousel-indicators");
 
       this.currentIndex = 0;
-      this.slidesPerView = 3;
-      this.totalSlides = Math.ceil(this.slides.length / this.slidesPerView);
+      this.slidesPerView = 1;
+      this.totalSlides = this.slides.length;
       this.interval = interval;
       this.autoPlayTimer = null;
 
@@ -88,10 +95,7 @@ function copyBibTeX() {
     }
 
     updateCarousel() {
-      const offset =
-        -this.currentIndex *
-        (100 / this.slidesPerView) *
-        this.slidesPerView;
+      const offset = -this.currentIndex * 100;
       this.track.style.transform = `translateX(${offset}%)`;
 
       const indicators = Array.from(this.indicators.children);
@@ -143,18 +147,65 @@ function copyBibTeX() {
     }
   }
 
+  function closeModal() {
+    document.getElementById("licenseModal").style.display = "none";
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
-    const imageCarousel = new Carousel(
-      document.querySelector("#imageCarousel"),
-      3000
-    );
-    const videoCarousel = new Carousel(
-      document.querySelector("#videoCarousel"),
-      5000
-    );
+    // begin modal code for license
+    const checkpointsUrl = "https://datashare.tu-dresden.de/s/Ck6AKFjka6StgCw";
+    const checkpointLink = document.getElementById("checkpoints-link");
+    if (checkpointLink) {
+      checkpointLink.style.display = "inline-block";
+    }
+      // show real link if license already accepted
+    if (sessionStorage.getItem("checkpoints_license_accepted")) {
+      checkpointLink.href = checkpointsUrl;
+    }
+    const modal = document.getElementById("licenseModal");
+    const licenseText = document.getElementById("licenseText");
+    const acceptBtn = document.getElementById("acceptBtn");
+
+    // show modal on checkpoints click if license not yet accepted
+    if (checkpointLink) {
+      checkpointLink.addEventListener("click", (e) => {
+        if (!sessionStorage.getItem("checkpoints_license_accepted")) {
+          e.preventDefault();
+          modal.style.display = "block";
+        }
+      });
+    }
+
+    // enable accept button after scrolling to bottom
+    licenseText.addEventListener("scroll", () => {
+      if (
+        licenseText.scrollTop + licenseText.clientHeight >=
+        licenseText.scrollHeight
+      ) {
+        acceptBtn.disabled = false;
+      }
+    });
+
+    // Accept license and open link
+    acceptBtn.addEventListener("click", () => {
+      sessionStorage.setItem("checkpoints_license_accepted", "true");
+      checkpointLink.href = checkpointsUrl;
+      modal.style.display = "none";
+      window.open(checkpointsUrl, "_blank");
+      return false;
+    });
+    // end modal code
+    const imageCarouselEl = document.querySelector("#imageCarousel");
+    const videoCarouselEl = document.querySelector("#videoCarousel");
+    const carousels = [];
+    if (imageCarouselEl) {
+      carousels.push(new Carousel(imageCarouselEl, 10000));
+    }
+    if (videoCarouselEl) {
+      carousels.push(new Carousel(videoCarouselEl, 5000));
+    }
 
     // Add touch support
-    const carousels = [imageCarousel, videoCarousel];
     carousels.forEach((carousel) => {
       let touchStartX = 0;
       let touchEndX = 0;
